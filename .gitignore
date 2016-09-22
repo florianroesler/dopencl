@@ -1,0 +1,13 @@
+CMakeCache.txt
+CMakeFiles
+CMakeScripts
+Makefile
+cmake_install.cmake
+install_manifest.txt
+CTestTestfile.cmake
+CPackConfig.cmake
+CPackSourceConfig.cmake
+libdcl.so*
+libdOpenCL.so*
+doc/
+dcl.nodes
