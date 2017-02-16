@@ -128,13 +128,18 @@ void getOpenCLVersion(
     }
 }
 
+VECTOR_CLASS<cl::Platform> getAllPlatforms() {
+    VECTOR_CLASS<cl::Platform> platforms;
+    cl::Platform::get(&platforms);
+    return platforms;
+}
+
 cl::Platform getPlatform(const std::string *platformName) {
     VECTOR_CLASS<cl::Platform> platforms;
-
+	
     /* The number of platform may be zero without throwing an error.
      * If an ICD loader is used, CL_PLATFORM_NOT_FOUND_KHR will be thrown. */
     cl::Platform::get(&platforms);
-
     /*
      * Select platform
      */
@@ -240,14 +245,17 @@ void dOpenCLd::terminate() {
 
 void dOpenCLd::initializeDevices() {
     VECTOR_CLASS<cl::Device> devices;
-
+	
     /*
      * Initialize device list
      */
-    _platform.getDevices(CL_DEVICE_TYPE_ALL, &devices);
+    VECTOR_CLASS<cl::Platform> platforms = getAllPlatforms();
+    auto platform = std::begin(platforms);
+    while (platform != std::end(platforms)) {
+    platform->getDevices(CL_DEVICE_TYPE_ALL, &devices);
 
     dcl::util::Logger << dcl::util::Info
-            << "Using platform '" << _platform.getInfo<CL_PLATFORM_NAME>() << "'\n"
+            << "Using platform '" << platform->getInfo<CL_PLATFORM_NAME>() << "'\n"
             << "\tfound " << devices.size() << " device(s):\n";
     for (auto device : devices) {
         dcl::util::Logger << dcl::util::Info
@@ -255,6 +263,8 @@ void dOpenCLd::initializeDevices() {
         _devices.push_back(std::unique_ptr<Device>(new Device(device)));
     }
     dcl::util::Logger.flush();
+    ++platform;
+   }
 }
 
 /* ****************************************************************************
