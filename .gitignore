@@ -10,3 +10,4 @@ CPackSourceConfig.cmake
 libdcl.so*
 libdOpenCL.so*
 dcl.nodes
+daemon/dcld
